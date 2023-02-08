@@ -1,5 +1,5 @@
 from django.db.models import Subquery, OuterRef, Count
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView
 from django_tables2 import SingleTableView
 from .models import Bus, BusRoute, Route
 from .tables import BusTable, RouteTable, RouteBusesTable, BusRoutesTable
@@ -9,8 +9,11 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
 
-class BusView(SingleTableView):
+class SingleTableTemplateView(SingleTableView):
     template_name = 'table.html'
+
+
+class BusView(SingleTableTemplateView):
     table_class = BusTable
 
     def get_queryset(self):
@@ -26,8 +29,7 @@ class BusView(SingleTableView):
         return context
 
 
-class RouteView(SingleTableView):
-    template_name = 'table.html'
+class RouteView(SingleTableTemplateView):
     table_class = RouteTable
 
     def get_queryset(self):
@@ -41,8 +43,7 @@ class RouteView(SingleTableView):
         return context
 
 
-class RouteBusesView(SingleTableView):
-    template_name = "table.html"
+class RouteBusesView(SingleTableTemplateView):
     table_class = RouteBusesTable
 
     def get_queryset(self):
@@ -56,12 +57,11 @@ class RouteBusesView(SingleTableView):
             route = Route.objects.get(id=route_id)
         except Route.DoesNotExist:
             return context
-        context['table_title'] = f"Buses on Route {route.name}"
+        context['table_title'] = f"Buses on {route.name}"
         return context
 
 
-class BusRoutesView(SingleTableView):
-    template_name = "table.html"
+class BusRoutesView(SingleTableTemplateView):
     table_class = BusRoutesTable
 
     def get_queryset(self):
@@ -70,7 +70,6 @@ class BusRoutesView(SingleTableView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        print(context)
         bus_id = self.kwargs.get('id')
         try:
             bus = Bus.objects.get(id=bus_id)
