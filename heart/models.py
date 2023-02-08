@@ -25,5 +25,8 @@ class BusRoute(models.Model):
     from_time = models.DateTimeField()
     to_time = models.DateTimeField()
 
+    class Meta:
+        unique_together = [('bus', 'from_time', 'to_time'), ('bus', 'route', 'from_time', 'to_time')]
+
     def __str__(self):
         return f'{self.bus.name} --> {self.route.name}'
