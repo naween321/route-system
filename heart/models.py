@@ -18,6 +18,7 @@ class Route(models.Model):
         return self.name
 
 
+# Custom Through Model
 class BusRoute(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
     route = models.ForeignKey(Route, on_delete=models.CASCADE)
