@@ -20,6 +20,11 @@ class BusView(SingleTableView):
                                                                                      annotate(count=Count('pk')).
                                                                                      values('count')))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['table_title'] = "Buses"
+        return context
+
 
 class RouteView(SingleTableView):
     template_name = 'table.html'
@@ -30,17 +35,29 @@ class RouteView(SingleTableView):
                                                                   values('route').annotate(count=Count('pk')).
                                                                   values('count')))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['table_title'] = "Routes"
+        return context
+
 
 class RouteBusesView(SingleTableView):
     template_name = "table.html"
     table_class = RouteBusesTable
 
     def get_queryset(self):
-        try:
-            route_id = self.kwargs['id']
-        except KeyError:
-            return BusRoute.objects.none()
+        route_id = self.kwargs['id']
         return BusRoute.objects.filter(route_id=route_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        route_id = self.kwargs.get('id')
+        try:
+            route = Route.objects.get(id=route_id)
+        except Route.DoesNotExist:
+            return context
+        context['table_title'] = f"Buses on Route {route.name}"
+        return context
 
 
 class BusRoutesView(SingleTableView):
@@ -48,8 +65,16 @@ class BusRoutesView(SingleTableView):
     table_class = BusRoutesTable
 
     def get_queryset(self):
-        try:
-            bus_id = self.kwargs['id']
-        except KeyError:
-            return BusRoute.objects.none()
+        bus_id = self.kwargs['id']
         return BusRoute.objects.filter(bus_id=bus_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        print(context)
+        bus_id = self.kwargs.get('id')
+        try:
+            bus = Bus.objects.get(id=bus_id)
+        except Route.DoesNotExist:
+            return context
+        context['table_title'] = f"Routes of the Bus {bus.name}"
+        return context
