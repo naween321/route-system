@@ -2,7 +2,7 @@ from django.db.models import Subquery, OuterRef, Count
 from django.views.generic import TemplateView, ListView
 from django_tables2 import SingleTableView
 from .models import Bus, BusRoute, Route
-from .tables import BusTable, RouteTable
+from .tables import BusTable, RouteTable, RouteBusesTable, BusRoutesTable
 
 
 class HomeView(TemplateView):
@@ -10,7 +10,7 @@ class HomeView(TemplateView):
 
 
 class BusView(SingleTableView):
-    template_name = 'bus.html'
+    template_name = 'table.html'
     table_class = BusTable
 
     def get_queryset(self):
@@ -22,7 +22,7 @@ class BusView(SingleTableView):
 
 
 class RouteView(SingleTableView):
-    template_name = 'route.html'
+    template_name = 'table.html'
     table_class = RouteTable
 
     def get_queryset(self):
@@ -31,5 +31,25 @@ class RouteView(SingleTableView):
                                                                   values('count')))
 
 
-class RouteBusesView(SingleTableView):pass
-class BusRoutesView(SingleTableView):pass
+class RouteBusesView(SingleTableView):
+    template_name = "table.html"
+    table_class = RouteBusesTable
+
+    def get_queryset(self):
+        try:
+            route_id = self.kwargs['id']
+        except KeyError:
+            return BusRoute.objects.none()
+        return BusRoute.objects.filter(route_id=route_id)
+
+
+class BusRoutesView(SingleTableView):
+    template_name = "table.html"
+    table_class = BusRoutesTable
+
+    def get_queryset(self):
+        try:
+            bus_id = self.kwargs['id']
+        except KeyError:
+            return BusRoute.objects.none()
+        return BusRoute.objects.filter(bus_id=bus_id)

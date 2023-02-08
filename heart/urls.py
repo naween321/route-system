@@ -4,8 +4,8 @@ from .views import HomeView, BusView, RouteView, BusRoutesView, RouteBusesView
 
 urlpatterns = [
     path("buses/", BusView.as_view(), name="buses"),
-    path("bus/<int:id>/routes/", BusRoutesView.as_view(), name="bus_routes"),
+    path("buses/<int:id>/routes/", BusRoutesView.as_view(), name="bus_routes"),
     path("routes/", RouteView.as_view(), name="routes"),
-    path("route/<int:id>/buses/", RouteBusesView.as_view(), name="route_buses"),
+    path("routes/<int:id>/buses/", RouteBusesView.as_view(), name="route_buses"),
     path("", HomeView.as_view(), name='home')
 ]
