@@ -73,7 +73,7 @@ class BusRoutesView(SingleTableTemplateView):
         bus_id = self.kwargs.get('id')
         try:
             bus = Bus.objects.get(id=bus_id)
-        except Route.DoesNotExist:
+        except Bus.DoesNotExist:
             return context
         context['table_title'] = f"Routes of the Bus {bus.name}"
         return context
